@@ -1,6 +1,6 @@
 # GitHub Release Downloader
 [![PyPI version shields.io](https://img.shields.io/pypi/v/github_release_downloader.svg)](https://pypi.org/project/github_release_downloader/)
-[![GitHub license](https://img.shields.io/github/license/MBQbUtils/github_release_downloader.svg)](https://github.com/MaxBQb/github_release_downloader/blob/master/LICENSE.md)
+[![GitHub license](https://img.shields.io/github/license/MBQbUtils/GithubReleaseDownloader.svg)](https://github.com/MaxBQb/github_release_downloader/blob/master/LICENSE.md)
 ![Python versions](https://img.shields.io/pypi/pyversions/github_release_downloader.svg)
 ---
 Python package to download/filter any release assets from the latest compatible version.
