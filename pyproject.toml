@@ -19,5 +19,5 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
 ]
 [tool.setuptools.dynamic]
-version = {attr = "github_release_downloader.__version__"}
+version = {attr = "github_release_downloader._meta.__version__"}
 dependencies = {file = ["requirements.txt"]}
