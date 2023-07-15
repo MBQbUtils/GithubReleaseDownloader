@@ -1,9 +1,9 @@
-# GithubReleaseDownloader
+# GitHub Release Downloader
 [![PyPI version shields.io](https://img.shields.io/pypi/v/github_release_downloader.svg)](https://pypi.org/project/github_release_downloader/)
 [![GitHub license](https://img.shields.io/github/license/MBQbUtils/github_release_downloader.svg)](https://github.com/MaxBQb/github_release_downloader/blob/master/LICENSE.md)
 ![Python versions](https://img.shields.io/pypi/pyversions/github_release_downloader.svg)
 ---
-Python package to download any release assets from the latest compatible version.
+Python package to download/filter any release assets from the latest compatible version.
 
 ## Usage
 
@@ -12,6 +12,7 @@ This tool can be used as library:
 from semantic_version import SimpleSpec
 from github_release_downloader import check_and_download_updates, GitHubRepo
 from pathlib import Path
+import re
 
 
 check_and_download_updates(
@@ -34,4 +35,4 @@ python -m github_release_downloader -u OwnerName -n RepoName -r ~1.1 -m .*\.exe 
 5. Handles token from GITHUB_TOKEN env
 6. Loads updates only when it's needed (caches last version used)
 7. Loggs own actions
-8. Uses only few github API endpoints (don't download code, you've never needed)
+8. Uses only few GitHub API endpoints (don't download code, you've never needed)
