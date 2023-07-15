@@ -26,6 +26,7 @@ def get_args():
     parser.add_argument('-n', '--repo-name', action='store', required=True, help="Github repo name")
     parser.add_argument('-m', '--mask', action='store', help="Regex mask to select assets by name", default=".*")
     parser.add_argument('-c', '--current-version', action='store', help="Current version installed")
+    parser.add_argument('-o', '--output-dir', action='store', help="Path to directory for downloads", default=".")
     parser.add_argument('-t', '--token', action='store', help="Github token",
                         default=os.environ.get("GITHUB_TOKEN", ""))
     parser.add_argument('-r', '--require', action='store', required=True,
@@ -44,7 +45,8 @@ def main():
         GitHubRepo(args.user, args.repo_name, args.token),
         SimpleSpec(args.require),
         assets_mask=re.compile(args.mask),
-        current_version=Version(args.current_version) if args.current_version else None
+        current_version=Version(args.current_version) if args.current_version else None,
+        downloads_dir=Path(args.output_dir)
     )
 
 
