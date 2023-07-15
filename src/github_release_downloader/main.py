@@ -54,7 +54,7 @@ class AuthSession:
 
     @classmethod
     def init(cls, repo: GitHubRepo):
-        if cls.header:
+        if cls.header or not repo.token:
             return
         cls.header = dict(Authorization=f'Bearer {repo.token}')
 
