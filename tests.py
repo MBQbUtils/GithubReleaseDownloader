@@ -1,3 +1,4 @@
+import os
 import re
 import shutil
 import unittest
@@ -13,7 +14,7 @@ class DownloadRelease(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.repo = GitHubRepo("MBQbUtils", "BulkStartStop")
+        cls.repo = GitHubRepo("MBQbUtils", "BulkStartStop", os.environ.get("GITHUB_TOKEN", ""))
         cls.spec = SimpleSpec("~1")
         cls.out_dir = Path("test/out")
 

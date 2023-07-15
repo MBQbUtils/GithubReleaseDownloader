@@ -40,3 +40,5 @@ jobs:
     - name: Test with pytest
       run: |
         pytest tests.py
+      env:
+        GITHUB_TOKEN: ${{ github.token }}

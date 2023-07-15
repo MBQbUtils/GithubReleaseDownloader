@@ -1,14 +1,36 @@
+import argparse
 import dataclasses
 import itertools
 import json
 import logging
+import os
 import re
+import sys
 import typing
 from pathlib import Path
 from typing import Callable
 
 import requests
 from semantic_version import Version, SimpleSpec
+
+from github_release_downloader import _meta
+
+
+def get_args():
+    parser = argparse.ArgumentParser(
+        "Github Release Downloader",
+        "Package to download any release assets from the latest compatible version",
+    )
+    parser.add_argument('-v', '--version', action='version', version=_meta.__version__)
+    parser.add_argument('-u', '--user', action='store', required=True, help="Github repo owner name")
+    parser.add_argument('-n', '--repo-name', action='store', required=True, help="Github repo name")
+    parser.add_argument('-m', '--mask', action='store', help="Regex mask to select assets by name", default=".*")
+    parser.add_argument('-c', '--current-version', action='store', help="Current version installed")
+    parser.add_argument('-t', '--token', action='store', help="Github token",
+                        default=os.environ.get("GITHUB_TOKEN", ""))
+    parser.add_argument('-r', '--require', action='store', required=True,
+                        help="Version compatibility specification, e.g. >=1.2.0,~1.3")
+    return parser.parse_args()
 
 
 def main():
@@ -17,10 +39,12 @@ def main():
         datefmt='%H:%M:%S',
         level=logging.INFO
     )
+    args = get_args()
     check_and_download_updates(
-        GitHubRepo("MBQbUtils", "BulkStartStop"),
-        SimpleSpec("~1"),
-        assets_mask=re.compile(".*\\.exe"),
+        GitHubRepo(args.user, args.repo_name, args.token),
+        SimpleSpec(args.require),
+        assets_mask=re.compile(args.mask),
+        current_version=Version(args.current_version) if args.current_version else None
     )
 
 
@@ -113,7 +137,7 @@ def check_and_download_updates(
 
     versions = list(sorted(compatibility_spec.filter(get_available_versions(repo)))[-10:])
     if not versions:
-        logging.error(f"No newer compatible versions available.")
+        logging.warning(f"No newer compatible versions available.")
         return
     logging.info(f"Available versions: {tuple(map(str, versions))}")
     download_version = versions[-1]
