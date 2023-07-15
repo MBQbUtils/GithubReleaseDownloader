@@ -5,6 +5,11 @@
 ---
 Python package to download/filter any release assets from the latest compatible version.
 
+## Installation
+```cmd
+pip install github_release_downloader
+```
+
 ## Usage
 
 This tool can be used as library:

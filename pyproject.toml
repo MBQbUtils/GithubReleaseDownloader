@@ -10,6 +10,7 @@ description = "Package to download any release assets from the latest compatible
 requires-python = ">=3.7"
 keywords = ["github", "release", "download", "asset", "downloader"]
 license = {text = "MIT license"}
+readme = "README.md"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.7",
@@ -17,6 +18,10 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Software Development :: Libraries :: Python Modules"
 ]
 [options.entry_points]
 console_scripts = {github_release_downloader = "github_release_downloader:__main__"}
