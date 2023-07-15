@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "github_release_downloader"
+authors = [{name = "MaxBQb"}]
+dynamic=["version", "dependencies"]
+description = "Package to download any release assets from the latest compatible version"
+requires-python = ">=3.7"
+keywords = ["github", "release", "download", "asset", "downloader"]
+license = {text = "MIT license"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+[tool.setuptools.dynamic]
+version = {attr = "github_release_downloader.__version__"}
+dependencies = {file = ["requirements.txt"]}
