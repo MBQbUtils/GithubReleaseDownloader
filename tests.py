@@ -19,6 +19,8 @@ class DownloadRelease(unittest.TestCase):
 
     def tearDown(self):
         shutil.rmtree(self.out_dir, True)
+        for path in glob("repo-*-*.cache"):
+            Path(path).unlink()
 
     def test_run_and_stop(self):
         check_and_download_updates(
