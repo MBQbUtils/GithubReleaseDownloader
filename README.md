@@ -7,7 +7,7 @@ Python package to download/filter any release assets from the latest compatible 
 
 ## Installation
 ```cmd
-pip install github_release_downloader
+pip install github-release-downloader
 ```
 
 ## Usage
