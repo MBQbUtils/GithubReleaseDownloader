@@ -191,7 +191,7 @@ def get_available_versions(repo: GitHubRepo, process_tag: Callable[[str], Versio
 
 
 def parse_tag(tag_name: str):
-    return Version(tag_name.removeprefix("v"))
+    return Version(tag_name.lstrip("v").strip())
 
 
 def get_assets(repo: GitHubRepo, tag_name: str, assets_mask=re.compile('.*')):
