@@ -1,11 +1,9 @@
 import argparse
-import dataclasses
 import itertools
 import json
 import logging
 import os
 import re
-import sys
 import typing
 from pathlib import Path
 from typing import Callable
@@ -14,6 +12,8 @@ import requests
 from semantic_version import Version, SimpleSpec
 
 from github_release_downloader import _meta
+from github_release_downloader.data import AuthSession, Cache
+from github_release_downloader.models import GitHubRepo, ReleaseAsset
 
 
 def get_args():
@@ -46,75 +46,6 @@ def main():
         assets_mask=re.compile(args.mask),
         current_version=Version(args.current_version) if args.current_version else None
     )
-
-
-@dataclasses.dataclass
-class GitHubRepo:
-    user: str
-    repo: str
-    token: str = ""
-
-
-@dataclasses.dataclass
-class ReleaseAsset:
-    name: str
-    url: str
-    size: int
-
-    @property
-    def is_valid(self):
-        return not (
-            self.name is None
-            or not self.name.strip(" ")
-            or self.url is None
-            or not self.url.strip(" ")
-            or self.size is None
-            or self.size <= 0
-        )
-
-
-class AuthSession:
-    header = dict()
-
-    @classmethod
-    def init(cls, repo: GitHubRepo):
-        if cls.header or not repo.token:
-            return
-        cls.header = dict(Authorization=f'Bearer {repo.token}')
-
-
-class Cache:
-    def __init__(self, filename: str = "version.cache"):
-        self._filename = Path(filename)
-        self._cache = None
-
-    @property
-    def version(self):
-        if self._cache is None:
-            self._load()
-        value = self._cache.get("version")
-        return Version(value) if value else None
-
-    @version.setter
-    def version(self, value: Version):
-        if self._cache is None:
-            self._cache = {}
-        self._cache["version"] = str(value)
-        self._save()
-
-    def _load(self):
-        if not self._filename.exists() or not self._filename.is_file():
-            self._save()
-        try:
-            with open(self._filename, "r") as file:
-                self._cache = json.load(file)
-        except Exception as e:
-            logging.exception("Unable to load cache:", exc_info=e)
-            self._save()
-
-    def _save(self):
-        with open(self._filename, "w") as file:
-            json.dump(self._cache or {'version': None}, file)
 
 
 def check_and_download_updates(
@@ -250,7 +181,3 @@ def is_already_installed(latest: Version, current: Version, compatibility_spec: 
             )
         )
     return True
-
-
-if __name__ == '__main__':
-    main()
