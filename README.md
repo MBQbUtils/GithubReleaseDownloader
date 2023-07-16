@@ -33,7 +33,7 @@ python -m github_release_downloader -u OwnerName -n RepoName -r ~1.1 -m .*\.exe 
 ```
 
 ## Features
-1. Downloads only compatible releases
+1. Downloads compatible releases (or latest if no requirements set)
 2. Filters assets using regex
 3. Has optional download_callback
 4. CLI tool can be used in CI

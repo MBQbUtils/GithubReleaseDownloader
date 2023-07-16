@@ -43,7 +43,7 @@ def main():
     args = get_args()
     check_and_download_updates(
         GitHubRepo(args.user, args.repo_name, args.token),
-        SimpleSpec(args.require),
+        SimpleSpec(args.require) if args.require else None,
         assets_mask=re.compile(args.mask),
         current_version=Version(args.current_version) if args.current_version else None,
         downloads_dir=Path(args.output_dir)
@@ -52,7 +52,7 @@ def main():
 
 def check_and_download_updates(
     repo: GitHubRepo,
-    compatibility_spec: SimpleSpec,
+    compatibility_spec: SimpleSpec = None,
     current_version: Version = None,
     assets_mask=re.compile('.*'),
     downloads_dir=Path(),
@@ -66,14 +66,18 @@ def check_and_download_updates(
         if current_version is None:
             current_version = Version("0.0.0")
     AuthSession.init(repo)
-    logging.info(f"Compatibility requirement: '{compatibility_spec}'")
+    if compatibility_spec is None:
+        logging.info(f"No compatibility requirements set")
+        download_version = get_latest_version(repo)
+    else:
+        logging.info(f"Compatibility requirement: '{compatibility_spec}'")
+        download_version = get_compatible_version(repo, compatibility_spec)
 
-    versions = list(sorted(compatibility_spec.filter(get_available_versions(repo)))[-10:])
-    if not versions:
-        logging.warning(f"No newer compatible versions available.")
+    if download_version is None:
+        compatible = " compatible" if compatibility_spec is not None else ""
+        logging.warning(f"No newer{compatible} versions available.")
         return
-    logging.info(f"Available versions: {tuple(map(str, versions))}")
-    download_version = versions[-1]
+
     if is_already_installed(download_version, current_version, compatibility_spec):
         return
     tag_name = getattr(download_version, '_origin_tag_name', str(download_version))
@@ -84,6 +88,14 @@ def check_and_download_updates(
     download_assets(assets, out_dir=downloads_dir, callback=download_callback)
     logging.info(f"Done!")
     cache.version = download_version
+
+
+def get_compatible_version(repo: GitHubRepo, compatibility_spec: SimpleSpec):
+    versions = sorted(compatibility_spec.filter(get_available_versions(repo)))[-10:]
+    if not versions:
+        return
+    logging.info(f"Available versions: {tuple(map(str, versions))}")
+    return versions[-1]
 
 
 def download_assets(
@@ -145,6 +157,22 @@ def get_available_versions(repo: GitHubRepo, process_tag: Callable[[str], Versio
         if len(data) < page_size:
             logging.info(f"No more pages")
             break
+
+
+def get_latest_version(repo: GitHubRepo, process_tag: Callable[[str], Version] = None):
+    if process_tag is None:
+        process_tag = parse_tag
+    logging.info(f"Searching for latest release in 'https://github.com/{repo.user}/{repo.repo}/'...")
+    request_url = f"https://api.github.com/repos/{repo.user}/{repo.repo}/releases/latest"
+    data = json.loads(requests.get(request_url, headers=AuthSession.header).text)
+    if 'message' in data:
+        return
+    tag_name = data.get("tag_name")
+    if tag_name is None:
+        return
+    version = process_tag(tag_name)
+    version._origin_tag_name = tag_name
+    return version
 
 
 def parse_tag(tag_name: str):
