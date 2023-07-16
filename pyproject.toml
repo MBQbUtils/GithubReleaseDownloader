@@ -23,6 +23,9 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: CPython",
     "Topic :: Software Development :: Libraries :: Python Modules"
 ]
+[project.urls]
+"Homepage" = "https://github.com/MBQbUtils/GithubReleaseDownloader"
+"Bug Tracker" = "https://github.com/MBQbUtils/GithubReleaseDownloader/issues"
 [options.entry_points]
 console_scripts = {github_release_downloader = "github_release_downloader:__main__"}
 [tool.setuptools.dynamic]
